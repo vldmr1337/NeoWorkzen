@@ -2,56 +2,63 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const BtnPrincipal = ({
-  hoverColor,
-  class: className,
-  width,
-  back,
-  border,
-  click,
-  color,
   texto,
-  borderRadius,
-  padding,
-  size,
-  weig,
-  font,
-  borderLeft,
-  showIcon
+  onClick,
+  bg = '#4658f6',
+  color = '#fff',
+  hoverBg,
+  width = 'auto',
+  border = 'transparent',
+  borderLeftColor = '#fff',
+  borderRadius = '0px',
+  padding = '10px 20px',
+  fontSize = '0.875rem',
+  fontWeight = '600',
+  showIcon = false,
+  className = ""
 }) => {
-  const [isClicked, setIsClicked] = useState(true);
+  const [active, setActive] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handleClick = (e) => {
-    setIsClicked(true);
-    if (click) {
-      click(e);
-    }
+  const handlePress = (e) => {
+    setActive(true);
+    if (onClick) onClick(e);
+    // Remove o estado de "ativo" após 200ms para o efeito de feedback
+    setTimeout(() => setActive(false), 200);
   };
 
   return (
     <button
-      className={className}
+      className={`relative overflow-hidden transition-all duration-200 active:scale-95 ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handlePress}
       style={{
         width: width,
-        backgroundColor: back,
-        border: `2px solid ${border}`,
+        backgroundColor: isHovered ? (hoverBg || bg) : bg,
         color: color,
         padding: padding,
         borderRadius: borderRadius,
-        fontSize: size,
-        fontWeight: weig,
-        fontFamily: font,
-        transition: 'background-color 0.3s, color 0.3s, border-left 0.5s',
-        height: '45px',
-        borderLeft: isClicked ? `5px solid ${borderLeft}` : `5px solid transparent`, // Animação ao clicar
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        border: `2px solid ${border}`,
+        borderLeft: active ? `6px solid ${borderLeftColor}` : `0px solid transparent`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        fontFamily: 'inherit'
       }}
-      onClick={handleClick}
     >
-      <div className='flex justify-center gap-2'>
-        {texto}
+      <div className="flex items-center justify-center gap-2 pointer-events-none">
+        <span className="uppercase tracking-wider">{texto}</span>
+        
         {showIcon && (
           <img
-            src={isClicked ? "icons/iconWhite-block.svg" : "icons/icon-block.svg"}
+            src={active || isHovered ? "icons/iconWhite-block.svg" : "icons/icon-block.svg"}
             alt="Icone"
+            className="w-4 h-4 transition-transform"
+            style={{ filter: active ? 'brightness(1)' : 'none' }}
           />
         )}
       </div>
@@ -60,22 +67,20 @@ const BtnPrincipal = ({
 };
 
 BtnPrincipal.propTypes = {
-  hoverColor: PropTypes.string.isRequired,
-  class: PropTypes.string,
-  width: PropTypes.string,
-  back: PropTypes.string.isRequired,
-  border: PropTypes.string,
-  borderLeft: PropTypes.string,
-  click: PropTypes.func,
-  color: PropTypes.string.isRequired,
   texto: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  onClick: PropTypes.func,
+  bg: PropTypes.string,
+  hoverBg: PropTypes.string,
+  color: PropTypes.string,
+  width: PropTypes.string,
+  border: PropTypes.string,
+  borderLeftColor: PropTypes.string,
   borderRadius: PropTypes.string,
   padding: PropTypes.string,
-  size: PropTypes.string,
-  weig: PropTypes.string,
-  font: PropTypes.string,
-  height: PropTypes.string,
+  fontSize: PropTypes.string,
+  fontWeight: PropTypes.string,
   showIcon: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default BtnPrincipal;
