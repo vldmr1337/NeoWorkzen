@@ -14,7 +14,8 @@ const BtnPrincipal = ({
   padding = '10px 20px',
   fontSize = '0.875rem',
   fontWeight = '600',
-  showIcon = false,
+  icon, // <--- NOVA PROP: recebe o caminho do SVG ou componente
+  iconHover, // <--- OPCIONAL: ícone diferente para o hover
   className = ""
 }) => {
   const [active, setActive] = useState(false);
@@ -23,19 +24,18 @@ const BtnPrincipal = ({
   const handlePress = (e) => {
     setActive(true);
     if (onClick) onClick(e);
-    // Remove o estado de "ativo" após 200ms para o efeito de feedback
     setTimeout(() => setActive(false), 200);
   };
 
   return (
     <button
-      className={`relative overflow-hidden transition-all duration-200 active:scale-95 ${className}`}
+      className={`relative overflow-hidden transition-all duration-300 active:scale-95 group ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handlePress}
       style={{
         width: width,
-        backgroundColor: isHovered ? (hoverBg || bg) : bg,
+        backgroundColor: isHovered ? (hoverBg || '#1A1A1B') : bg, // Padrão ink no hover
         color: color,
         padding: padding,
         borderRadius: borderRadius,
@@ -47,18 +47,18 @@ const BtnPrincipal = ({
         alignItems: 'center',
         justifyContent: 'center',
         cursor: 'pointer',
-        fontFamily: 'inherit'
+        whiteSpace: 'nowrap', // <--- ADICIONE ISSO AQUI
+        flexShrink: 0        // <--- E ISSO PARA NÃO "ESPREMER" O BOTÃO
       }}
     >
-      <div className="flex items-center justify-center gap-2 pointer-events-none">
-        <span className="uppercase tracking-wider">{texto}</span>
+      <div className="flex items-center justify-center gap-3 pointer-events-none">
+        <span className="uppercase tracking-[0.1em]">{texto}</span>
         
-        {showIcon && (
+        {icon && (
           <img
-            src={active || isHovered ? "icons/iconWhite-block.svg" : "icons/icon-block.svg"}
+            src={isHovered && iconHover ? iconHover : icon}
             alt="Icone"
-            className="w-4 h-4 transition-transform"
-            style={{ filter: active ? 'brightness(1)' : 'none' }}
+            className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
           />
         )}
       </div>
@@ -67,7 +67,7 @@ const BtnPrincipal = ({
 };
 
 BtnPrincipal.propTypes = {
-  texto: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  texto: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   bg: PropTypes.string,
   hoverBg: PropTypes.string,
@@ -79,7 +79,8 @@ BtnPrincipal.propTypes = {
   padding: PropTypes.string,
   fontSize: PropTypes.string,
   fontWeight: PropTypes.string,
-  showIcon: PropTypes.bool,
+  icon: PropTypes.string, // Agora é uma string com o caminho do arquivo
+  iconHover: PropTypes.string,
   className: PropTypes.string,
 };
 

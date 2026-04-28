@@ -63,18 +63,32 @@
 .nav-btn-link {
   background: none;
   border: none;
-  color: #888;
-  font-size: 0.75rem;
-  font-weight: 700;
+  color: #fff; /* Aumentei o contraste para branco puro ou um cinza bem claro */
+  font-size: 0.95rem; /* Era 0.75rem, agora está mais robusto */
+  font-weight: 800; /* Deixei mais pesado (Bold) para combinar com o título do Hero */
+  letter-spacing: 0.05em; /* Um leve respiro entre as letras fica mais chique */
+  text-transform: uppercase;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
-  transition: 0.3s;
+  gap: 8px; /* Aumentei o espaço entre o texto e a setinha */
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nav-btn-link:hover { color: var(--acid); }
+.nav-btn-link:hover { 
+  color: var(--acid);
+  transform: translateY(-2px); /* Um leve bounce no hover para dar feedback */
+}
 
+/* Ajuste na setinha (ícone) para acompanhar o tamanho novo */
+.nav-btn-link svg {
+  font-size: 1.1rem; 
+  transition: transform 0.3s ease;
+}
+
+.nav-btn-link:hover svg {
+  transform: rotate(180deg); /* A setinha vira quando passa o mouse */
+}
 /* SEARCH */
 .search-wrapper {
   background: #1a1a1c;

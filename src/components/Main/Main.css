@@ -1,132 +1,63 @@
-.dec{
-    color: #1D4ED8;
+.main-hero {
+    max-width: 1400px;
 }
 
-.hover:hover{
-    background: red !important;
+.titulo-hero {
+    font-size: clamp(2.5rem, 5vw, 5rem); /* Ajusta o tamanho da fonte automaticamente conforme a tela */
+    font-weight: 900;
+    text-transform: uppercase;
 }
 
-@media (max-width: 1400px){
-    .main{
-        max-width: 60rem !important;
-    }
+/* Efeito de texto vazado (Brutalista) */
+.outline-text {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--acid);
+}
 
-    .titulo{
-        font-size: 3rem !important;
-    }
+.paragrafo-hero {
+    line-height: 1.6;
+}
 
-    .image{
-        max-width: 400px !important;
+/* No seu Main.css */
+
+.image-hero {
+    filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.08));
+    transition: all 0.5s ease;
+}
+.image-hero:hover {
+    transform: scale(1.05) translateY(-10px);
+}
+
+/* Garante que o fundo azul acompanhe o estilo premium */
+.bg-acid {
+    background-color: var(--acid);
+}
+
+/* Ajuste para mobile para o fundo não ficar gigante */
+@media (max-width: 768px) {
+    .rounded-\[60px\] {
+        border-radius: 40px;
     }
 }
 
-@media (max-width: 1100px){
-    .main{
-        max-width: 50rem !important;
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .main-hero {
+        text-align: center;
+        padding-top: 2rem;
     }
 
-    .titulo{
-        font-size: 2.5rem !important;
+    .titSub, .main-hero div {
+        align-items: center;
+        text-align: center;
     }
 
-    .parag{
-        font-size: 1rem !important;
+    .titulo-hero {
+        font-size: 2.5rem;
     }
-}
-
-
-@media (max-width: 935px){
-    .main{
-        display: flex !important;
-        flex-direction: column;
-    }
-
-    .titSub{
-        order: 1;
-    }
-
-    .titulo{
+    
+    .image-hero {
+        max-width: 80%;
         margin-top: 2rem;
-        font-size: 3rem !important;
-    }
-
-    .parag{
-        font-size: 1.25rem !important;
-    }
-}
-
-
-@media (max-width: 900px){
-    .titSub{
-        padding-left: 30px !important;
-        padding-right: 30px !important;
-    }
-}
-
-
-
-@media (max-width: 700px){
-    .image{
-        max-width: 300px !important;
-    }
-}
-
-
-@media (max-width: 530px){
-    .titulo{
-        margin-top: 2rem;
-        font-size: 2.5rem !important;
-    }
-
-    .parag{
-        font-size: 1.10rem !important;
-    }
-
-    .titSub{
-        padding-left: 30px !important;
-        padding-right: 30px !important;
-    }
-}
-
-
-
-@media (max-width: 465px){
-    .parag{
-        font-size: 1rem !important;
-    }
-}
-
-@media (max-width: 430px){
-    .titulo{
-        margin-top: 2rem;
-        font-size: 2rem !important;
-    }
-
-    .parag{
-        font-size: 0.95rem !important;
-    }
-}
-
-
-@media (max-width: 410px){
-    .titulo{
-        margin-top: 2rem;
-        font-size: 1.75rem !important;
-    }
-
-    .parag{
-        font-size: 0.85rem !important;
-    }
-}
-
-
-@media (max-width: 370px){
-    .titulo{
-        margin-top: 2rem;
-        font-size: 1.5rem !important;
-    }
-
-    .parag{
-        font-size: 0.75rem !important;
     }
 }

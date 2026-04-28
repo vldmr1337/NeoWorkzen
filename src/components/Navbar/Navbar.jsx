@@ -59,7 +59,7 @@ const Navbar = ({
         {/* LADO ESQUERDO: LOGO E LINKS PRINCIPAIS */}
         <div className="nav-left">
           <Link to="/" className="nav-logo">
-            <img src={Logo} alt="Worzen" style={{ width: '110px' }} />
+            <img src={Logo} alt="Worzen" style={{ width: '180px' }} />
           </Link>
           
           {link && (
