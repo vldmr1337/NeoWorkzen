@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { IoIosArrowDown, IoIosSearch, IoMdNotificationsOutline, IoMdSettings, IoMdLogOut } from "react-icons/io";
+import { IoIosArrowDown, IoIosSearch, IoMdNotificationsOutline, IoMdSettings, IoMdLogOut, IoIosMenu, IoIosClose } from "react-icons/io";
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
 
@@ -17,8 +17,6 @@ const Navbar = ({
   link = true,
   img = true,
   criConta = true,
-  userTalento = false,
-  NavEmpresa = false,
   barraPesquisa = false,
   setSearchText,
   notify
@@ -26,56 +24,65 @@ const Navbar = ({
   const [scrolled, setScrolled] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [menuMobile, setMenuMobile] = useState(false);
   
   const { data: user } = useUserTalento();
   const { data: userDataEmpresa } = useUserEmpresa();
   const location = useLocation();
   const isHome = location.pathname === '/';
 
-  // Efeito de scroll para mudar a altura da nav
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Debounce para pesquisa
   useEffect(() => {
-    if (setSearchText) setSearchText(inputValue);
-  }, [inputValue, setSearchText]);
+    const handleResize = () => {
+      if (window.innerWidth > 768) setMenuMobile(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     window.location.href = '/Login';
   };
 
-  // Se não houver usuário logado e não for a home, não renderiza (conforme sua lógica original)
   if (!(userDataEmpresa || user || isHome)) return null;
 
   return (
     <nav className={`elysian-nav ${scrolled ? 'scrolled' : ''}`}>
-      <div className="nav-container">
+      {/* Adicionado 'relative' para o container pai */}
+      <div className="nav-container relative">
         
-        {/* LADO ESQUERDO: LOGO E LINKS PRINCIPAIS */}
+        {/* LADO ESQUERDO */}
         <div className="nav-left">
-          <Link to="/" className="nav-logo">
-            <img src={Logo} alt="Worzen" style={{ width: '180px' }} />
+          <button 
+            className="mobile-menu-btn flex md:hidden" 
+            onClick={() => setMenuMobile(!menuMobile)}
+          >
+            {menuMobile ? <IoIosClose size={32} /> : <IoIosMenu size={32} />}
+          </button>
+
+          {/* Container da logo ajustado para centralização */}
+          <Link to="/" className="nav-logo-container">
+            <img src={Logo} alt="Worzen" className="logo-img" />
           </Link>
           
           {link && (
-            <div className="nav-links">
+            <div className="nav-links hidden md:flex">
               <button className="nav-btn-link">BUSCAR TRABALHO <IoIosArrowDown /></button>
               <button className="nav-btn-link">ANUNCIAR VAGA <IoIosArrowDown /></button>
             </div>
           )}
         </div>
 
-        {/* LADO DIREITO: PESQUISA, NOTIFICAÇÃO E PROFILE */}
+        {/* LADO DIREITO */}
         <div className="nav-right">
-          
-          {/* BARRA DE PESQUISA ESTILIZADA */}
           {barraPesquisa && (
-            <div className="search-wrapper">
+            <div className="search-wrapper hidden md:flex">
               <IoIosSearch className="search-icon" />
               <input 
                 type="text" 
@@ -87,92 +94,65 @@ const Navbar = ({
           )}
 
           <div className="nav-actions">
-            
-            {/* NOTIFICAÇÕES */}
-            {(user || userDataEmpresa) && (
-              <button className="icon-action">
-                <IoMdNotificationsOutline size={22} />
-                {notify && <span className="notify-dot"></span>}
-              </button>
-            )}
-
-{/* ÁREA DE LOGIN (CASO DESLOGADO) */}
-{isHome && !user && !userDataEmpresa && showDashnone && (
-  <div className="flex gap-4 items-center">
-    <Link to="/Login">
-      {/* bg="transparent" para o estilo outline
-          border="#4658f6" para aparecer a borda no botão transparente
-      */}
-      <BtnPrincipal 
-        texto="Entrar" 
-        bg="transparent" 
-        border="rgba(255,255,255,0.1)" 
-        hoverBg="rgba(255,255,255,0.05)"
-        color="#fff" 
-        width="100px" 
-      />
-    </Link>
-    
-    {criConta && (
-      <Link to="/Escolha">
-        {/* Usando a cor --acid do seu CSS (#4658f6) */}
-        <BtnPrincipal 
-          texto="Criar Conta" 
-          bg="#4658f6" 
-          hoverBg="#3544c7"
-          color="#fff" 
-          width="150px" 
-        />
-      </Link>
-    )}
-  </div>
-)}
-
-            {/* AVATAR E DROPDOWN (TALENTO OU EMPRESA) */}
-            {(user || userDataEmpresa) && img && (
-              <div className="profile-trigger" onClick={() => setShowProfile(!showProfile)}>
-                <div className="avatar-box">
-                  {user?.image || userDataEmpresa?.image ? (
-                    <img src={user?.image || userDataEmpresa?.image} alt="User" />
-                  ) : (
-                    <div className="flex items-center justify-center h-full bg-zinc-800">
-                       {user ? <User prLet={true} /> : <UserEmpresa prLet={true} />}
-                    </div>
-                  )}
-                </div>
-
-                <AnimatePresence>
-                  {showProfile && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="elysian-dropdown"
-                    >
-                      <div className="dropdown-header">
-                        <p className="user-name">{(user?.name || userDataEmpresa?.name || 'USER').toUpperCase()}</p>
-                        <p className="user-role outline-text">
-                          {user ? 'TALENTO_LEVEL_1' : 'MODO_CORPORATIVO'}
-                        </p>
-                      </div>
-                      
-                      <div className="dropdown-body">
-                        <Link to={user ? "/config" : "/ConfiguracaoEmpresa"} className="drop-item">
-                          <IoMdSettings /> CONFIGURAÇÕES
-                        </Link>
-                        <button onClick={handleLogout} className="drop-item logout">
-                          <IoMdLogOut /> DISCONNECT_
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+            {isHome && !user && !userDataEmpresa && showDashnone && (
+              <div className="hidden md:flex gap-2 md:gap-4 items-center">
+                <Link to="/Login">
+                  <BtnPrincipal texto="Entrar" bg="transparent" border="rgba(255, 255, 255, 0.1)" width="80px" className="md:w-[100px]" hoverBg="#212121" />
+                </Link>
+                {criConta && (
+                  <Link to="/Escolha">
+                    <BtnPrincipal texto="Criar Conta" hoverBg="#3544c7" width="130px" className="md:w-[150px]" />
+                  </Link>
+                )}
               </div>
             )}
 
+            {(user || userDataEmpresa) && img && (
+              <div className="profile-trigger" onClick={() => setShowProfile(!showProfile)}>
+                <div className="avatar-box">
+                  <img src={user?.image || userDataEmpresa?.image || 'https://via.placeholder.com/150'} alt="User" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {menuMobile && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="mobile-overlay md:hidden"
+          >
+            <div className="flex flex-col gap-6 p-8">
+              <button className="nav-btn-link text-lg justify-start">BUSCAR TRABALHO</button>
+              <button className="nav-btn-link text-lg justify-start">ANUNCIAR VAGA</button>
+              
+              {barraPesquisa && (
+                 <div className="search-wrapper flex">
+                    <IoIosSearch className="search-icon" />
+                    <input type="text" placeholder="PROCURAR..." className="w-full bg-transparent outline-none text-white" />
+                 </div>
+              )}
+
+              {isHome && !user && !userDataEmpresa && showDashnone && (
+                <div className="flex flex-col gap-4 pt-4 border-t border-zinc-800">
+                  <Link to="/Login" onClick={() => setMenuMobile(false)}>
+                    <BtnPrincipal texto="Entrar" bg="transparent" border="rgba(255, 255, 255, 0.1)" width="100%" hoverBg="#212121" />
+                  </Link>
+                  {criConta && (
+                    <Link to="/Escolha" onClick={() => setMenuMobile(false)}>
+                      <BtnPrincipal texto="Criar Conta" hoverBg="#3544c7" width="100%" />
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

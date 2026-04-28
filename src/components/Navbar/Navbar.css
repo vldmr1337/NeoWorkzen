@@ -32,9 +32,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative; /* Necessário para o absolute da logo no mobile */
 }
 
-/* LOGO */
+/* --- LOGO --- */
 .nav-logo {
   text-decoration: none;
   display: flex;
@@ -42,54 +43,56 @@
   line-height: 0.8;
 }
 
-.logo-main {
-  color: #fff;
-  font-weight: 900;
-  font-size: 1.4rem;
-  letter-spacing: -1px;
+.nav-logo-container {
+  display: flex;
+  align-items: center;
 }
 
-.logo-sub {
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--acid);
+.logo-img {
+  width: 140px; /* Mobile base */
+  transition: 0.3s;
 }
 
-/* LINKS */
+@media (min-width: 768px) {
+  .logo-img {
+    width: 180px; /* Desktop */
+  }
+}
+
+/* --- LINKS & BOTOES --- */
 .nav-left { display: flex; align-items: center; gap: 40px; }
 .nav-links { display: flex; gap: 20px; }
 
 .nav-btn-link {
   background: none;
   border: none;
-  color: #fff; /* Aumentei o contraste para branco puro ou um cinza bem claro */
-  font-size: 0.95rem; /* Era 0.75rem, agora está mais robusto */
-  font-weight: 800; /* Deixei mais pesado (Bold) para combinar com o título do Hero */
-  letter-spacing: 0.05em; /* Um leve respiro entre as letras fica mais chique */
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px; /* Aumentei o espaço entre o texto e a setinha */
+  gap: 8px;
   transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-btn-link:hover { 
   color: var(--acid);
-  transform: translateY(-2px); /* Um leve bounce no hover para dar feedback */
+  transform: translateY(-2px);
 }
 
-/* Ajuste na setinha (ícone) para acompanhar o tamanho novo */
 .nav-btn-link svg {
   font-size: 1.1rem; 
   transition: transform 0.3s ease;
 }
 
 .nav-btn-link:hover svg {
-  transform: rotate(180deg); /* A setinha vira quando passa o mouse */
+  transform: rotate(180deg);
 }
-/* SEARCH */
+
+/* --- SEARCH --- */
 .search-wrapper {
   background: #1a1a1c;
   border: 1px solid #2a2a2d;
@@ -112,7 +115,7 @@
   font-family: 'Space Grotesk';
 }
 
-/* ACTIONS */
+/* --- ACTIONS & PROFILE --- */
 .nav-right { display: flex; align-items: center; gap: 25px; }
 .nav-actions { display: flex; align-items: center; gap: 15px; }
 
@@ -141,11 +144,12 @@
   border: 1px solid var(--acid);
   padding: 2px;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
 
-/* DROPDOWN BRUTALISTA */
+/* --- DROPDOWN BRUTALISTA --- */
 .elysian-dropdown {
   position: absolute;
   top: 60px;
@@ -183,7 +187,7 @@
   color: transparent;
   -webkit-text-stroke: 1px var(--acid);
 }
-/* Adicione isso ao seu Navbar.css */
+
 .profile-trigger {
   position: relative;
   display: flex;
@@ -195,12 +199,87 @@
   flex-direction: column;
 }
 
-/* Garante que o input não suma no mobile se necessário */
+/* --- MOBILE MENU BUTTON (Hambúrguer) --- */
+.mobile-menu-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: none; /* Escondido por padrão */
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- MOBILE OVERLAY (Menu Aberto) --- */
+.mobile-overlay {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  background: var(--ink);
+  border-bottom: 2px solid var(--acid);
+  z-index: 99;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* --- REGRAS DE VISIBILIDADE & CENTRALIZAÇÃO --- */
+
+/* No Mobile (até 768px) */
 @media (max-width: 768px) {
-  .search-wrapper {
-    display: none; /* Ou ajuste a largura */
+  .nav-logo-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
   }
-  .nav-links {
-    display: none;
+
+  .logo-img {
+    width: 120px; /* Ajuste leve para o centro */
+  }
+
+  .nav-links, 
+  .search-wrapper {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+    position: relative;
+    z-index: 20;
+  }
+  
+  .nav-left {
+    gap: 10px;
+    z-index: 20;
+  }
+
+  .nav-right {
+    z-index: 20;
+  }
+
+  .mobile-overlay .nav-btn-link {
+    display: flex !important;
+  }
+}
+
+/* No Desktop (acima de 769px) */
+@media (min-width: 769px) {
+  .nav-logo-container {
+    position: static;
+    transform: none;
+  }
+
+  .mobile-menu-btn {
+    display: none !important;
+  }
+
+  .nav-links, 
+  .search-wrapper {
+    display: flex !important;
+  }
+
+  .mobile-overlay {
+    display: none !important;
   }
 }
